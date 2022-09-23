@@ -139,13 +139,13 @@ class Bot:
 
     def setup_bot_files(self):
         self.logger.info("Setting up bot folder...")
+        self.bot_path = f"bots/{self.bot_id}"
 
-        base_path = f"bots/{self.bot_id}"
         additional_paths = ["OCR_inputs", "units"]
 
         for path in additional_paths:
-            if not os.path.exists(f"{base_path}/{path}"):
-                os.makedirs(f"{base_path}/{path}")
+            if not os.path.exists(f"{self.bot_path}/{path}"):
+                os.makedirs(f"{self.bot_path}/{path}")
 
         # Check if 'bot_feed.png' exists
         if not os.path.isfile(f"bot_feed_{self.bot_id}.png"):
@@ -241,10 +241,8 @@ class Bot:
             self.getScreen()
         box_list = boxes.reshape(15, 2)
         names = []
-        if not os.path.isdir("OCR_inputs"):
-            os.mkdir("OCR_inputs")
         for i in range(len(box_list)):
-            file_name = f"OCR_inputs/icon_{str(i)}.png"
+            file_name = f"{self.bot_path}/OCR_inputs/icon_{str(i)}.png"
             self.crop_img(*box_list[i], *box_size, name=file_name)
             names.append(file_name)
         return names
