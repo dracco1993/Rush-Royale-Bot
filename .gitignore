@@ -17,3 +17,4 @@ config.ini
 bot_feed_*.png
 configs/
 notebooks/
+dev_images/
