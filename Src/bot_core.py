@@ -36,16 +36,15 @@ class Bot:
         self.device = device
         print(f"Device: {device}")
         self.bot_id = self.device.split(":")[-1]
+
+        self.setup_bot_files()
+
         self.shell(f".scrcpy\\adb connect {self.device}")
         # Try to launch application through ADB shell
         self.shell("monkey -p com.my.defense 1")
-        # Check if 'bot_feed.png' exists
-        if not os.path.isfile(f"bot_feed_{self.bot_id}.png"):
-            self.getScreen()
-        self.screenRGB = cv2.imread(f"bot_feed_{self.bot_id}.png")
+
         self.client = Client(device=self.device)
         # Start scrcpy client
-        # self.client.start()
         self.client.start(threaded=True)
         self.logger.info("Connecting to Bluestacks")
         time.sleep(0.5)
@@ -112,7 +111,7 @@ class Bot:
 
     # Take screenshot of device screen and load pixel values
     def getScreen(self):
-        bot_id = self.device.split(":")[-1]
+        path = f"bots/{self.bot_id}/bot_feed.png"
         p = Popen(
             [
                 ".scrcpy\\adb",
@@ -120,13 +119,13 @@ class Bot:
                 "screencap",
                 "-p",
                 ">",
-                f"bot_feed_{bot_id}.png",
+                path,
             ],
             shell=True,
         )
         p.wait()
         # Store screenshot in class variable
-        self.screenRGB = cv2.imread(f"bot_feed_{bot_id}.png")
+        self.screenRGB = cv2.imread(path)
 
     # Crop latest screenshot taken
     def crop_img(self, x, y, dx, dy, name="icon.png"):
@@ -137,6 +136,20 @@ class Bot:
 
     def getMana(self):
         return int(self.getText(220, 1360, 90, 50, new=False, digits=True))
+
+    def setup_bot_files(self):
+        self.logger.info("Setting up bot folder...")
+        self.bot_path = f"bots/{self.bot_id}"
+
+        additional_paths = ["OCR_inputs", "units"]
+
+        for path in additional_paths:
+            if not os.path.exists(f"{self.bot_path}/{path}"):
+                os.makedirs(f"{self.bot_path}/{path}")
+
+        # Check if 'bot_feed.png' exists
+        if not os.path.isfile(f"bot_feed_{self.bot_id}.png"):
+            self.getScreen()
 
     # find icon on screen
     def getXYByImage(self, target, new=True):
@@ -228,10 +241,8 @@ class Bot:
             self.getScreen()
         box_list = boxes.reshape(15, 2)
         names = []
-        if not os.path.isdir("OCR_inputs"):
-            os.mkdir("OCR_inputs")
         for i in range(len(box_list)):
-            file_name = f"OCR_inputs/icon_{str(i)}.png"
+            file_name = f"{self.bot_path}/OCR_inputs/icon_{str(i)}.png"
             self.crop_img(*box_list[i], *box_size, name=file_name)
             names.append(file_name)
         return names
@@ -340,7 +351,7 @@ class Bot:
         info = ""
         merge_df = None
         names = self.scan_grid(new=True)
-        grid_df = bot_perception.grid_status(names, prev_grid=prev_grid)
+        grid_df = bot_perception.grid_status(self.bot_path, names, prev_grid=prev_grid)
         df_split, unit_series, df_groups, group_keys = grid_meta_info(grid_df)
         # Select stuff to merge
         merge_series = unit_series.copy()

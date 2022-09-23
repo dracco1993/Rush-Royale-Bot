@@ -83,7 +83,7 @@ class RR_bot:
         except:
             pass
 
-    # Initilzie the thread for main bot
+    # Initialize the thread for main bot
     def start_command(self):
         self.stop_flag = False
         self.update_config()
@@ -106,8 +106,8 @@ class RR_bot:
             1:-1
         ]
         self.config["bot"]["pve"] = str(bool(self.pve_var.get()))
-        with open("config.ini", "w") as configfile:
-            self.config.write(configfile)
+        with open("config.ini", "w") as config_file:
+            self.config.write(config_file)
         self.logger.info("Stored settings to config!")
 
     # Update unit selection
@@ -115,7 +115,7 @@ class RR_bot:
         self.selected_units = self.config["bot"]["units"].replace(" ", "").split(",")
         self.logger.info(f'Selected units: {", ".join(self.selected_units)}')
         if not bot_handler.select_units(
-            [unit + ".png" for unit in self.selected_units]
+            self.bot_instance.bot_path, [unit + ".png" for unit in self.selected_units]
         ):
             valid_units = (
                 " ".join(os.listdir("all_units")).replace(".png", "").split(" ")
@@ -127,14 +127,10 @@ class RR_bot:
     # Run the bot
     def start_bot(self):
         # Run startup of bot instance
-        self.logger.info("----- TEST -----")
         self.logger.warning("Starting bot...")
         self.bot_instance = bot_handler.start_bot_class(self.logger)
-        self.logger.info("Sending startup message...")
         os.system("type src\startup_message.txt")
-        self.logger.info("Startup message sent!")
         self.update_units()
-        self.logger.info("Updated units")
         infos_ready = threading.Event()
         # Pass gui info to bot
         self.bot_instance.bot_stop = False
