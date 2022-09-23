@@ -46,8 +46,8 @@ def scan_ports(target_ip, port_start, port_end, batch=3):
     # Get open ports
     port_list = list(open_ports.keys())
     print(f"Ports Open: {port_list}")
-    deivce = get_adb_device()
-    return deivce
+    device = get_adb_device()
+    return device
 
 
 # Check if adb device is already connected
@@ -55,15 +55,15 @@ def get_adb_device():
     devList = check_output(".scrcpy\\adb devices", shell=True)
     devListArr = str(devList).split("\\n")
     # Check for online status
-    deivce = None
+    device = None
     for client in devListArr[1:]:
         client_ip = client.split("\\t")[0]
         if "device" in client:
-            deivce = client_ip
-            print("Found ADB device! {}".format(deivce))
+            device = client_ip
+            print("Found ADB device! {}".format(device))
         else:
             Popen(f".scrcpy\\adb disconnect {client_ip}", shell=True, stderr=DEVNULL)
-    return deivce
+    return device
 
 
 def get_device():
