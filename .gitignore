@@ -14,7 +14,7 @@ build
 dist
 config.ini
 
-bot_feed_*.png
+bots/
 configs/
 notebooks/
 dev_images/
