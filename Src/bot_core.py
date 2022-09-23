@@ -351,7 +351,7 @@ class Bot:
         info = ""
         merge_df = None
         names = self.scan_grid(new=True)
-        grid_df = bot_perception.grid_status(names, prev_grid=prev_grid)
+        grid_df = bot_perception.grid_status(self.bot_path, names, prev_grid=prev_grid)
         df_split, unit_series, df_groups, group_keys = grid_meta_info(grid_df)
         # Select stuff to merge
         merge_series = unit_series.copy()

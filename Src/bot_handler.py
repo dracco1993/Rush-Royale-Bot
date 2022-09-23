@@ -43,21 +43,21 @@ def download(url, filename):
 
 
 # Moves selected units from collection folder to deck folder for unit recognition options
-def select_units(units):
-    if os.path.isdir("units"):
-        [os.remove("units/" + unit) for unit in os.listdir("units")]
-    else:
-        os.mkdir("units")
+def select_units(bot_path, units):
+    base_path = f"{bot_path}/units"
+
+    [os.remove(f"{base_path}/{unit}") for unit in os.listdir(f"{base_path}/")]
+
     # Read and write all images
     for new_unit in units:
         try:
-            cv2.imwrite("units/" + new_unit, cv2.imread("all_units/" + new_unit))
+            cv2.imwrite(f"{base_path}/{new_unit}", cv2.imread("all_units/" + new_unit))
         except Exception as e:
             print(e)
             print(f"{new_unit} not found")
             continue
     # Verify enough units were selected
-    return len(os.listdir("units")) > 4
+    return len(os.listdir(base_path)) > 4
 
 
 def start_bot_class(logger):

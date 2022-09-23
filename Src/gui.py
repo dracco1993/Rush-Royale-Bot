@@ -115,7 +115,7 @@ class RR_bot:
         self.selected_units = self.config["bot"]["units"].replace(" ", "").split(",")
         self.logger.info(f'Selected units: {", ".join(self.selected_units)}')
         if not bot_handler.select_units(
-            [unit + ".png" for unit in self.selected_units]
+            self.bot_instance.bot_path, [unit + ".png" for unit in self.selected_units]
         ):
             valid_units = (
                 " ".join(os.listdir("all_units")).replace(".png", "").split(" ")
