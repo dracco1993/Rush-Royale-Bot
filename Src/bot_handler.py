@@ -62,13 +62,9 @@ def select_units(units):
 
 def start_bot_class(logger):
     # auto-install scrcpy if needed
-    print("Checking for scrcpy")
-    print(check_scrcpy(logger))
     if not check_scrcpy(logger):
         return None
     bot = bot_core.Bot()
-    print("Bot started")
-    print(bot)
     return bot
 
 
