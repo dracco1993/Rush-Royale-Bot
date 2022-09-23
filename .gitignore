@@ -13,3 +13,7 @@ RR_bot.log
 build
 dist
 config.ini
+
+bot_feed_*.png
+configs/
+notebooks/
